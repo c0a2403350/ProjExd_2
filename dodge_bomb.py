@@ -33,6 +33,12 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
        
         
 def gameover_Event(screen: pg.Surface) -> None:
+    """
+    gameover_Event関数
+    引数：Surface
+    戻り値：なし
+    ゲームオーバー画面の表示
+    """
     event_screen = pg.Surface((WIDTH, HEIGHT)) 
     pg.draw.rect(event_screen, (0,0,0), (0,0,WIDTH,HEIGHT))
     event_screen.set_alpha(100)
@@ -59,6 +65,12 @@ def gameover_Event(screen: pg.Surface) -> None:
 
 
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    init_bb_imgs関数
+    引数：なし
+    戻り値：([爆弾表示のSurfaceのリスト], [加速度のリスト])
+    10段階の大きさを持った爆弾と10段階の加速を意味するリストを定義し、返す
+    """
     #爆弾の大きさ
     bb_imgs = []
     for r in range(1, 11):
@@ -72,7 +84,14 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
 
     return (bb_imgs, bb_accs)
 
+
 def get_kk_imgs(kk_img) -> dict[tuple[int, int], pg.Surface]:    
+    """
+    get_kk_imgs関数
+    引数：画像
+    戻り値：画像
+    画像の角度を変える
+    """
     kk_dict = {
         (0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
         (5, 0): pg.transform.flip(kk_img, 1, 0),
@@ -86,6 +105,7 @@ def get_kk_imgs(kk_img) -> dict[tuple[int, int], pg.Surface]:
     }
     
     return kk_dict    
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
