@@ -49,13 +49,16 @@ def gameover_Event(screen: pg.Surface) -> None:
     img_rct = event_img.get_rect()
     img_rct.center = txt_rec.centerx * 1.4, txt_rec.centery
     event_screen.blit(event_img, img_rct) #描画
-    img_rct.center = txt_rec.centerx * 0.4, txt_rec.centery
+    img_rct.center = txt_rec.centerx * 0.6, txt_rec.centery
     event_screen.blit(event_img, img_rct) #描画
     
     #画面反映
     screen.blit(event_screen, [0,0])
     pg.display.update()
     sleep(5)
+
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    pass
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
