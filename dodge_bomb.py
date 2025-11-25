@@ -72,6 +72,21 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
 
     return (bb_imgs, bb_accs)
 
+def get_kk_imgs(kk_img) -> dict[tuple[int, int], pg.Surface]:    
+    kk_dict = {
+        (0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
+        (5, 0): pg.transform.flip(kk_img, 1, 0),
+        (-5, 0): pg.transform.flip(kk_img, 0, 0),
+        (0, 5): pg.transform.rotozoom(kk_img, 90, 1.0),
+        (0, -5): pg.transform.rotozoom(kk_img, 270, 1.0),
+        (5, 5): pg.transform.rotozoom(kk_img, 315, 1.0),
+        (-5, 5): pg.transform.rotozoom(kk_img, 45, 1.0),
+        (5, -5): pg.transform.rotozoom(kk_img, -45, 1.0),
+        (-5, -5): pg.transform.rotozoom(kk_img, 315, 1.0),
+    }
+    
+    return kk_dict    
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -96,6 +111,7 @@ def main():
     tmr = 0
     
     bb_imgs, bb_accs = init_bb_imgs()   
+    kk_imgs = get_kk_imgs(kk_img)
     
     while True:
         for event in pg.event.get():
@@ -116,9 +132,11 @@ def main():
             if key_lst[key]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
+                
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
+        kk_img = kk_imgs[tuple(sum_mv)]
         screen.blit(kk_img, kk_rct)
 
         #爆弾              
