@@ -68,10 +68,9 @@ def main():
             if key_lst[key]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
-        if check_bound(kk_rct) != (True, True):
-            sum_mv[0] *= -1
-            sum_mv[1] *= -1
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
 
         #爆弾
