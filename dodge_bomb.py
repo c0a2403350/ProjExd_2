@@ -57,8 +57,20 @@ def gameover_Event(screen: pg.Surface) -> None:
     pg.display.update()
     sleep(5)
 
+
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
-    pass
+    #爆弾の大きさ
+    bb_imgs = []
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        bb_img.set_colorkey((0,0,0))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_imgs.append(bb_img)
+    
+    #爆弾の加速度
+    bb_accs = [a for a in range(1, 11)]
+
+    return (bb_imgs, bb_accs)
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -83,6 +95,8 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
     
+    bb_imgs, bb_accs = init_bb_imgs()   
+    
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -91,7 +105,7 @@ def main():
             print("GameOver")
             gameover_Event(screen)
             return
-            
+                   
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
@@ -107,7 +121,7 @@ def main():
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
 
-        #爆弾
+        #爆弾              
         screen.blit(bb_img, bb_rct)
         jdg = check_bound(bb_rct)
         if jdg != (True, True):
@@ -115,7 +129,18 @@ def main():
                 vx *= -1
             if not jdg[1]:
                 vy *= -1
-        bb_rct.move_ip(vx, vy)
+        
+        #加速適応
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        avy = vy*bb_accs[min(tmr//500, 9)]
+        
+        bb_rct.move_ip(avx, avy)
+        
+        #時間により拡大・加速判定
+        bb_img = bb_imgs[min(tmr//500, 9)]
+        #Rect更新
+        bb_rct.width = bb_img.get_rect().width
+        bb_rct.height = bb_img.get_rect().height
         
         pg.display.update()
         tmr += 1
