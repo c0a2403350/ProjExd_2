@@ -1,6 +1,7 @@
 import os
 import sys
 import random
+from time import sleep
 import pygame as pg
 
 WIDTH, HEIGHT = 1100, 650
@@ -13,14 +14,15 @@ MOVEMENT = {
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-"""
-check_bound関数
-引数：オブジェクトRect
-戻り値：（横軸のはみ出しbool判定, 縦軸のはみ出しbool判定）
 
-画面内なら1, 画面外なら0を返す
-"""
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
+    """
+    check_bound関数
+    引数：オブジェクトRect
+    戻り値：（横軸のはみ出しbool判定, 縦軸のはみ出しbool判定）
+
+    画面内なら1, 画面外なら0を返す
+    """
     x, y = 1, 1
     if obj_rct.left < 0 or obj_rct.right > WIDTH:
         x = 0
@@ -30,6 +32,30 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     return (x, y)
        
         
+def gameover_Event(screen: pg.Surface) -> None:
+    event_screen = pg.Surface((WIDTH, HEIGHT)) 
+    pg.draw.rect(event_screen, (0,0,0), (0,0,WIDTH,HEIGHT))
+    event_screen.set_alpha(100)
+    
+    #テキスト
+    fnt = pg.font.Font(None, 80)
+    txt = fnt.render("GameOver", True, (255, 255, 255))
+    txt_rec = txt.get_rect()
+    txt_rec.center = WIDTH*0.5, HEIGHT*0.5
+    event_screen.blit(txt, txt_rec) #描画
+    
+    #画像
+    event_img = pg.transform.rotozoom(pg.image.load("fig/0.png"), 0, 0.9)
+    img_rct = event_img.get_rect()
+    img_rct.center = txt_rec.centerx * 1.4, txt_rec.centery
+    event_screen.blit(event_img, img_rct) #描画
+    img_rct.center = txt_rec.centerx * 0.4, txt_rec.centery
+    event_screen.blit(event_img, img_rct) #描画
+    
+    #画面反映
+    screen.blit(event_screen, [0,0])
+    pg.display.update()
+    sleep(5)
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -60,6 +86,7 @@ def main():
                 return
         if kk_rct.colliderect(bb_rct):
             print("GameOver")
+            gameover_Event(screen)
             return
             
         screen.blit(bg_img, [0, 0]) 
